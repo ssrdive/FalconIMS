@@ -1,10 +1,10 @@
 import { Pool } from '../../config/mysql';
 
-export const getTerritories = (callback) => {
+export const getRegions = (callback) => {
     Pool.getConnection((poolErr, connection) => {
         if (poolErr)
             return callback(poolErr, null);
-        connection.query('SELECT T.*, R.name as region FROM territory T LEFT JOIN region R on T.region_id = R.id;', (err, rows, fields) => {
+        connection.query('SELECT * FROM region;', (err, rows, fields) => {
             connection.release();
             if(err)
                 return callback(err, null);
@@ -13,11 +13,11 @@ export const getTerritories = (callback) => {
     })
 }
 
-export const createTerritory = (territory, callback) => {
+export const createRegion = (region, callback) => {
     Pool.getConnection((poolErr, connection) => {
         if (poolErr)
             return callback(poolErr, null);
-        connection.query('INSERT INTO territory SET ?;', [territory], (err, rows, fields) => {
+        connection.query('INSERT INTO region SET ?;', [region], (err, rows, fields) => {
             connection.release();
             if(err)
                 return callback(err, false);
