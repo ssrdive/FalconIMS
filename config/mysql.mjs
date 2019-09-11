@@ -1,12 +1,15 @@
 import mysql from 'mysql';
+import yargs from 'yargs';
+
+const args = yargs.argv;
 
 export const Pool = mysql.createPool({
-    host            :   '206.189.157.72',
-    user            :   'root',
+    host            :   args.dbIP,
+    user            :   args.dbUser,
     multipleStatements: true,
-    password        :   'falcon@123',
+    password        :   args.dbPass,
     timezone        :   'UTC',
-    database        :   'falcon',
+    database        :   args.dbName,
     dateStrings     :   'date',
     supportBigNumbers: true,
     bigNumberStrings: true
