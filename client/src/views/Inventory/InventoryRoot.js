@@ -92,10 +92,10 @@ export default function InventoryRoot(props) {
                                         </tbody>
                                     </table>
                                 </div>
+                                <br />
                             </GridItem>
                             <GridItem xs={12} sm={12} md={12}>
                                 <Info><b>Administrative Operations</b></Info>
-                                <hr />
                             </GridItem>
                             <GridItem xs={12} sm={6} md={6}>
                                 <Success>Models</Success>

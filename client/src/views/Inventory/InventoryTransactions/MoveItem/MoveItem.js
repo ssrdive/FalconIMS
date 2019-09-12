@@ -1,34 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from "components/CustomButtons/Button.js";
-import falconAPI from "falcon-api";
 
 import classes from 'components/UI/Input/Input.module.css';
 
-const CatInputs = ({ idx, itemState, handleItemChange, handleItemDelete, setModel }) => {
-    const [models, setModels] = useState([]);
-
-    useEffect(() => {
-        falconAPI.post('/model/all')
-            .then(response => {
-                if (response.data.status) {
-                    setModels(prevModels => {
-                        return response.data.message;
-                    })
-                    if(response.data.message.length > 0)
-                        setModel(idx, response.data.message[0].id);
-                } else {
-                }
-            })
-            .catch(error => {
-            })
-    // eslint-disable-next-line
-    }, []);
+const MoveItem = ({ idx, itemState, handleItemChange, handleItemDelete, handleEnterPressed }) => {
 
     return (
         <div key={idx}>
-            <label id={classes.InputElement}>Model</label>
+            <label id={classes.InputElement}>{itemState[idx].model}</label>
             <input
                 type="text"
                 data-idx={idx}
@@ -37,8 +18,9 @@ const CatInputs = ({ idx, itemState, handleItemChange, handleItemDelete, setMode
                 placeholder="Primary Number"
                 value={itemState[idx].primaryNumber}
                 onChange={handleItemChange}
+                onKeyDown={handleEnterPressed}
             />
-            <label id={classes.InputElement}>Secondary Number</label>
+            <label id={classes.InputElement}>{itemState[idx].secondaryNumber}</label>
             <input
                 type="text"
                 data-idx={idx}
@@ -53,9 +35,11 @@ const CatInputs = ({ idx, itemState, handleItemChange, handleItemDelete, setMode
         </div>
     );
 };
-CatInputs.propTypes = {
+
+MoveItem.propTypes = {
     idx: PropTypes.number,
     itemState: PropTypes.array,
     handleCatChange: PropTypes.func,
 };
-export default CatInputs;
+
+export default MoveItem;

@@ -90,15 +90,15 @@ export default function GoodsIn(props) {
         messageBody: ''
     });
     const [loading, setLoading] = useState(false);
-    const blankItem = { model: '', primaryNumber: '', secondaryNumber: '', price: '' };
+    const blankItem = { model: 'Model', primaryNumber: '', secondaryNumber: 'Primary Number', price: '' };
     const [itemState, setItemState] = useState([
-        { model: '', primaryNumber: '', secondaryNumber: '', price: '' }
+        { model: 'Model', primaryNumber: '', secondaryNumber: 'Primary Number', price: '' }
     ]);
 
     // Life cycle hooks
     useEffect(() => {
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Main Stock']}, 'mainStock');
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Authorized Dealer', 'Showroom']}, 'goodsOutWarehouse');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Main Stock'] }, 'mainStock');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Authorized Dealer', 'Showroom'] }, 'goodsOutWarehouse');
     }, []);
 
     // Functions
@@ -131,7 +131,7 @@ export default function GoodsIn(props) {
                         return updatedForm;
                     });
                 } else {
-                    if(response.data.message.length > 0)
+                    if (response.data.message.length > 0)
                         setSubmitStatus({ submitted: true, messageType: 'error', messageBody: response.data.message });
                     else
                         setSubmitStatus({ submitted: true, messageType: 'error', messageBody: 'Prerequired data is not present in the database' });
@@ -233,10 +233,20 @@ export default function GoodsIn(props) {
         setItemState([...itemState, { ...blankItem }]);
     }
 
-    const setModel = (idx, model) => {
-        const updatedItems = [...itemState];
-        updatedItems[idx].model = model;
-        setItemState(updatedItems);
+    const handleEnterPressed = (e, idx) => {
+        if (e.keyCode === 13) {
+            falconAPI.post('/getSecondaryNumberModelName', { primaryNumber: itemState[idx].primaryNumber })
+                .then(response => {
+                    console.log(response);
+                    const updatedItems = [...itemState];
+                    updatedItems[idx].secondaryNumber = response.data.message.secondaryNumber;
+                    updatedItems[idx].model = response.data.message.model;
+                    setItemState(prevItemState => updatedItems);
+                })
+                .catch(error => {
+
+                })
+        }
     }
 
     // Interface pre-processing
@@ -303,8 +313,8 @@ export default function GoodsIn(props) {
                                                 idx={idx}
                                                 itemState={itemState}
                                                 handleItemChange={handleItemChange}
+                                                handleEnterPressed={(e) => handleEnterPressed(e, idx)}
                                                 handleItemDelete={(e) => handleItemDelete(e, idx)}
-                                                setModel={setModel}
                                             />
                                         </GridItem>
                                     );

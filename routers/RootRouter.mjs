@@ -2,9 +2,12 @@ import express from 'express';
 
 import { getDateTime } from '../functions/MDate';
 
-import { getModels, createModel } from '../models/Model/Model';
 import {
     createGoodsIn,
+    getSecondaryNumberModelName
+} from '../models/InventoryTransaction/InventoryTransaction';
+import { getModels, createModel } from '../models/Model/Model';
+import {
     getWarehouseTypes,
     createWarehouse,
     getWarehouses,
@@ -30,6 +33,23 @@ rootRouter.post('/goodsIn', (req, res) => {
             return res.json({ status: true, message: 'Goods in issued' });
         else
             return res.json({ status: false, message: 'Failed to issue goods in. Error:' + err.code });
+    })
+})
+
+rootRouter.post('/getSecondaryNumberModelName', (req, res) => {
+    const { primaryNumber } = req.body;
+
+    getSecondaryNumberModelName(primaryNumber, (err, data) => {
+        const response = { secondaryNumber: 'N/A', model: 'N/A' };
+        if (err)
+            return res.json({ status: true, message: response });
+        else {
+            if (data !== undefined) {
+                response.secondaryNumber = data.secondary_id;
+                response.model = data.model;
+            }
+            return res.json({ status: true, message: response });
+        }
     })
 })
 

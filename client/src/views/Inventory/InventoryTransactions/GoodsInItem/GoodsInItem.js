@@ -6,7 +6,7 @@ import falconAPI from "falcon-api";
 
 import classes from 'components/UI/Input/Input.module.css';
 
-const CatInputs = ({ idx, itemState, handleItemChange, handleItemDelete, setModel }) => {
+const GoodsInItem = ({ idx, itemState, handleItemChange, handleItemDelete, setModel }) => {
     const [models, setModels] = useState([]);
 
     useEffect(() => {
@@ -69,9 +69,11 @@ const CatInputs = ({ idx, itemState, handleItemChange, handleItemDelete, setMode
         </div>
     );
 };
-CatInputs.propTypes = {
+
+GoodsInItem.propTypes = {
     idx: PropTypes.number,
     itemState: PropTypes.array,
     handleCatChange: PropTypes.func,
 };
-export default CatInputs;
+
+export default GoodsInItem;
