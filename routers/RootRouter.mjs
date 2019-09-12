@@ -1,14 +1,36 @@
 import express from 'express';
 
+import { getDateTime } from '../functions/MDate';
+
 import { getModels, createModel } from '../models/Model/Model';
-import { getWarehouseTypes, createWarehouse, getWarehouses } from '../models/Warehouse/Warehouse';
+import {
+    createGoodsIn,
+    getWarehouseTypes,
+    createWarehouse,
+    getWarehouses,
+    getWarehousesByTypes
+} from '../models/Warehouse/Warehouse';
 import { getTerritories, createTerritory } from '../models/Territory/Territory';
 import { getRegions, createRegion } from '../models/Region/Region';
 
 const rootRouter = express.Router();
 
 rootRouter.get('/', (req, res) => {
-    res.send('Hello');
+    res.send('api.falconims.com');
+})
+
+rootRouter.post('/goodsIn', (req, res) => {
+    const { deliveryDocument, items } = req.body;
+
+    deliveryDocument.date = getDateTime();
+    deliveryDocument.issuer = 'SYSTEM';
+
+    createGoodsIn(deliveryDocument, items, (err, created) => {
+        if (created)
+            return res.json({ status: true, message: 'Goods in issued' });
+        else
+            return res.json({ status: false, message: 'Failed to issue goods in. Error:' + err.code });
+    })
 })
 
 rootRouter.post('/model/all', (req, res) => {
@@ -59,6 +81,17 @@ rootRouter.post('/warehouse/type/all', (req, res) => {
             return res.json({ status: true, message: data });
     });
 });
+
+rootRouter.post('/warehouse/bytype/all', (req, res) => {
+    const { warehouseTypes } = req.body;
+
+    getWarehousesByTypes(warehouseTypes, (err, data) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed to retrieve warehouses data' });
+        else
+            return res.json({ status: true, message: data });
+    })
+})
 
 rootRouter.post('/territory/all', (req, res) => {
     getTerritories((err, data) => {
