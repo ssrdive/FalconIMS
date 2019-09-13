@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -10,18 +10,59 @@ import CardBody from "components/Card/CardBody.js";
 import Button from "components/CustomButtons/Button.js";
 import Success from "components/Typography/Success.js";
 import Info from "components/Typography/Info.js";
+import Spinner from "components/UI/Spinner/Spinner";
+import SnackbarContent from "components/Snackbar/SnackbarContent.js";
 import styles from "styles/styles";
+import falconAPI from "falcon-api";
 
+import inputClasses from 'components/UI/Input/Input.module.css';
 import tableClasses from "styles/table.module.css";
 
 const useStyles = makeStyles(styles);
 
 export default function InventoryRoot(props) {
+    // State management hooks
     const classes = useStyles();
-    const [searchKeyword, setSearchKeyword] = React.useState('');
+    const [transactions, setTransactions] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({
+        submitted: false,
+        messageType: '',
+        messageBody: ''
+    });
+
+    // Life cycle hooks
+    useEffect(() => {
+        setLoading(prevLoading => true);
+        falconAPI.post('/getRecentFiveTransactions')
+            .then(response => {
+                setLoading(prevLoading => false);
+                if (response.data.status) {
+                    setTransactions(prevModels => {
+                        return response.data.message;
+                    })
+                } else {
+                    setSubmitStatus({
+                        submitted: true, messageType: 'error', messageBody: response.data.message
+                    });
+                }
+            })
+            .catch(error => {
+                setLoading(prevLoading => false);
+                setSubmitStatus({
+                    submitted: true,
+                    messageType: 'error',
+                    messageBody: 'Error occurred during the API call'
+                })
+            });
+    }, []);
+
+    // Functions
     const searchInputHandler = (event) => {
         setSearchKeyword(event.target.value);
     }
+
     const searchHandler = (event) => {
         event.preventDefault();
         props.history.push({
@@ -29,6 +70,39 @@ export default function InventoryRoot(props) {
             search: '?skw=' + searchKeyword
         })
     }
+
+    // Interface pre-processing
+    const tableBody = (
+        <tbody>
+            {transactions.map(transaction => {
+                return <tr
+                    key={transaction.id}>
+                    <td>{transaction.id}</td>
+                    <td>{transaction.delivery_document_type}</td>
+                    <td>{transaction.from_warehouse}</td>
+                    <td>{transaction.to_warehouse}</td>
+                    <td>{transaction.date}</td>
+                </tr>;
+            })}
+        </tbody>
+    );
+    let notification = null;
+    if (submitStatus.submitted) {
+        switch (submitStatus.messageType) {
+            case 'error':
+                notification = <SnackbarContent message={submitStatus.messageBody} close color="warning" />;
+                break;
+            case 'success':
+                notification = <SnackbarContent message={submitStatus.messageBody} close color="success" />;
+                break;
+            default:
+                notification = null;
+                break;
+        }
+    }
+    const pageHeader = loading ? <Spinner /> : notification;
+
+    // Final rendering
     return (
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
@@ -48,48 +122,25 @@ export default function InventoryRoot(props) {
                             <GridItem xs={12} sm={6} md={6}>
                                 <Success>Search Item</Success>
                                 <form>
-                                    <input value={searchKeyword} onChange={searchInputHandler} style={{ width: '100%' }} type='text' />
+                                    <input value={searchKeyword} onChange={searchInputHandler} id={inputClasses.InputElement} type='text' />
                                     <Button type='button' onClick={searchHandler}>Search</Button>
                                 </form>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={12}>
                                 <Success>Recent Transactions</Success>
+                                {pageHeader}
                                 <div className={tableClasses.HelloTable}>
                                     <table>
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Warehouse</th>
+                                                <th>Transaction Type</th>
+                                                <th>From Warehouse</th>
+                                                <th>To Warehouse</th>
                                                 <th>Date</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>10314</td>
-                                                <td>S.N.P.Traders</td>
-                                                <td>2019-09-06 20:25:15</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10313</td>
-                                                <td>S.N.P.Traders</td>
-                                                <td>2019-09-06 20:25:15</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10314</td>
-                                                <td>S.N.P.Traders</td>
-                                                <td>2019-09-06 20:25:15</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10314</td>
-                                                <td>S.N.P.Traders</td>
-                                                <td>2019-09-06 20:25:15</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10314</td>
-                                                <td>S.N.P.Traders</td>
-                                                <td>2019-09-06 20:25:15</td>
-                                            </tr>
-                                        </tbody>
+                                        {tableBody}
                                     </table>
                                 </div>
                                 <br />

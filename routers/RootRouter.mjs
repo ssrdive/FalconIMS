@@ -5,6 +5,7 @@ import { getDateTime } from '../functions/MDate';
 import {
     createGoodsIn,
     createInventoryTransaction,
+    getRecentFiveTransactions,
     getSecondaryNumberModelName
 } from '../models/InventoryTransaction/InventoryTransaction';
 import { getModels, createModel } from '../models/Model/Model';
@@ -49,6 +50,15 @@ rootRouter.post('/inventoryTransaction/add', (req, res) => {
         else
             return res.json({ status: false, message: 'Failed to issue inventory trasaction. Error:' + err.code });
     })
+})
+
+rootRouter.post('/getRecentFiveTransactions', (req, res) => {
+    getRecentFiveTransactions((err, data) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed to retrieve recent transactions' });
+        else
+            return res.json({ status: true, message: data });
+    });
 })
 
 rootRouter.post('/getSecondaryNumberModelName', (req, res) => {
