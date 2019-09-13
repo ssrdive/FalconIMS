@@ -202,7 +202,7 @@ export default function GoodsIn(props) {
         itemState.map((itm) => {
             return items.push([itm.model, itm.primaryNumber, itm.secondaryNumber, itm.price]);
         });
-        falconAPI.post('/goodsIn', { deliveryDocument, items })
+        falconAPI.post('/goodsIn/add', { deliveryDocument, items })
             .then(response => {
                 setLoading(prevLoading => false);
                 setSubmitStatus({

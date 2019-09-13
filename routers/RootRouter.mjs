@@ -4,6 +4,7 @@ import { getDateTime } from '../functions/MDate';
 
 import {
     createGoodsIn,
+    createInventoryTransaction,
     getSecondaryNumberModelName
 } from '../models/InventoryTransaction/InventoryTransaction';
 import { getModels, createModel } from '../models/Model/Model';
@@ -22,7 +23,7 @@ rootRouter.get('/', (req, res) => {
     res.send('api.falconims.com');
 })
 
-rootRouter.post('/goodsIn', (req, res) => {
+rootRouter.post('/goodsIn/add', (req, res) => {
     const { deliveryDocument, items } = req.body;
 
     deliveryDocument.date = getDateTime();
@@ -33,6 +34,20 @@ rootRouter.post('/goodsIn', (req, res) => {
             return res.json({ status: true, message: 'Goods in issued' });
         else
             return res.json({ status: false, message: 'Failed to issue goods in. Error:' + err.code });
+    })
+})
+
+rootRouter.post('/inventoryTransaction/add', (req, res) => {
+    const { transactionType, deliveryDocument, items, prices } = req.body;
+
+    deliveryDocument.date = getDateTime();
+    deliveryDocument.issuer = 'SYSTEM';
+
+    createInventoryTransaction(transactionType, deliveryDocument, items, prices, (err, created) => {
+        if (created)
+            return res.json({ status: true, message: 'Inventory transaction issued' });
+        else
+            return res.json({ status: false, message: 'Failed to issue inventory trasaction. Error:' + err.code });
     })
 })
 

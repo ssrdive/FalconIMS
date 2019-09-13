@@ -190,14 +190,21 @@ export default function GoodsIn(props) {
             });
             return;
         }
-        const warehouse = {
-            warehouse_type_id: form.warehouseType.value,
-            territory_id: form.territory.value,
-            name: form.name.value,
-            address: form.address.value,
-            telephone: form.telephone.value
+        const deliveryDocument = {
+            warehouse_id: form.goodsOutWarehouse.value,
+            from_warehouse_id: form.mainStock.value,
+            vehicle_no: form.vehicleNo.value,
+            driver_name: form.driverName.value,
+            driver_telephone: form.driverTelephone.value
         }
-        falconAPI.post('/warehouse/add', { warehouse })
+        const items = [];
+        const prices = [];
+        // eslint-disable-next-line
+        itemState.map((itm) => {
+            items.push([itm.primaryNumber]);
+            prices.push([itm.price]);
+        });
+        falconAPI.post('/inventoryTransaction/add', { transactionType: 'Goods Out', deliveryDocument, items, prices })
             .then(response => {
                 setLoading(prevLoading => false);
                 setSubmitStatus({
@@ -235,18 +242,23 @@ export default function GoodsIn(props) {
 
     const handleEnterPressed = (e, idx) => {
         if (e.keyCode === 13) {
+            setPrimaryNumberModelHandler(idx, 'Loading...', 'Loading...');
             falconAPI.post('/getSecondaryNumberModelName', { primaryNumber: itemState[idx].primaryNumber })
                 .then(response => {
-                    console.log(response);
-                    const updatedItems = [...itemState];
-                    updatedItems[idx].secondaryNumber = response.data.message.secondaryNumber;
-                    updatedItems[idx].model = response.data.message.model;
-                    setItemState(prevItemState => updatedItems);
+                    const { secondaryNumber, model } = response.data.message;
+                    setPrimaryNumberModelHandler(idx, secondaryNumber, model);
                 })
                 .catch(error => {
-
+                    setPrimaryNumberModelHandler(idx, 'Error', 'Error');
                 })
         }
+    }
+
+    const setPrimaryNumberModelHandler = (idx, primaryNumber, model) => {
+        const updatedItems = [...itemState];
+        updatedItems[idx].secondaryNumber = primaryNumber;
+        updatedItems[idx].model = model;
+        setItemState(prevItemState => updatedItems);
     }
 
     // Interface pre-processing
