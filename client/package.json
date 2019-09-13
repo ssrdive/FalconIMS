@@ -34,7 +34,7 @@
   },
   "keywords": [],
   "author": "Shamal Sandeep",
-  "homepage": "https://www.falconims.com",
+  "homepage": "https://falconims.com",
   "optionalDependencies": {
     "@types/googlemaps": "3.37.3",
     "@types/markerclustererplus": "2.1.33",

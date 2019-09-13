@@ -127,6 +127,7 @@ export default function InventoryRoot(props) {
                                 </form>
                             </GridItem>
                             <GridItem xs={12} sm={12} md={12}>
+                                <br />
                                 <Success>Recent Transactions</Success>
                                 {pageHeader}
                                 <div className={tableClasses.HelloTable}>
@@ -142,6 +143,7 @@ export default function InventoryRoot(props) {
                                         </thead>
                                         {tableBody}
                                     </table>
+                                    
                                 </div>
                                 <br />
                             </GridItem>

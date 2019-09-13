@@ -54,6 +54,10 @@ export default function AllModel(props) {
     }, []);
 
     // Interface pre-processing
+    const tableValues = [];
+    models.map(model => {
+        return tableValues.push([model.id, model.name, model.country, model.primary_name, model.secondary_name])
+    });
     const tableBody = (
         <tbody>
             {models.map(model => {

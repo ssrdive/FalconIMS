@@ -3,7 +3,9 @@
 }
 
 .HelloTable table {
+    background-color: #f2f2f2;
     width: 100%;
+    border-collapse:collapse;
     text-align: center;
 }
 
@@ -12,13 +14,16 @@
 }
 
 .HelloTable tr {
-    background-color: #f2f2f2
+    border-bottom: 1px solid #abb5c4;
+    
 }
 
 .HelloTable table thead th {
+    color: #1a633f;
     padding: 10px;
 }
 
 .HelloTable table tbody td {
+    color: #1b405e;
     padding: 5px;
 }

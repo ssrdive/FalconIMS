@@ -293,7 +293,7 @@ export default function GoodsTransfer(props) {
         <GridContainer>
             <GridItem xs={12} sm={12} md={12}>
                 <Card>
-                    <CardHeader color="success">
+                    <CardHeader color="danger">
                         <h4 className={classes.cardTitleWhite}>{props.title}</h4>
                     </CardHeader>
                     <CardBody>
