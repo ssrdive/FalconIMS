@@ -9,7 +9,7 @@ const MoveItem = ({ idx, itemState, handleItemChange, handleItemDelete, handleEn
 
     return (
         <div key={idx}>
-            <label id={classes.InputElement}>{itemState[idx].model}</label>
+            <label id={classes.InputElement} style={{color: 'green'}}>{itemState[idx].model}</label>
             <input
                 type="text"
                 data-idx={idx}
@@ -20,7 +20,7 @@ const MoveItem = ({ idx, itemState, handleItemChange, handleItemDelete, handleEn
                 onChange={handleItemChange}
                 onKeyDown={handleEnterPressed}
             />
-            <label id={classes.InputElement}>{itemState[idx].secondaryNumber}</label>
+            <label id={classes.InputElement} style={{color: 'green'}}>{itemState[idx].secondaryNumber}</label>
             <input
                 type="text"
                 data-idx={idx}

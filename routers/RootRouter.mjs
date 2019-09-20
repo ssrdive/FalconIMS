@@ -13,18 +13,22 @@ import {
     getWarehouseTypes,
     createWarehouse,
     getWarehouses,
-    getWarehousesByTypes
+    getWarehousesByTypes,
+    getWarehouseStock,
+    getWarehouseName
 } from '../models/Warehouse/Warehouse';
 import { getTerritories, createTerritory } from '../models/Territory/Territory';
 import { getRegions, createRegion } from '../models/Region/Region';
+import { searchItem } from '../models/Search/Search';
+import { count } from '../models/Count/Count';
 
-const rootRouter = express.Router();
+const RootRouter = express.Router();
 
-rootRouter.get('/', (req, res) => {
+RootRouter.get('/', (req, res) => {
     res.send('api.falconims.com');
 })
 
-rootRouter.post('/goodsIn/add', (req, res) => {
+RootRouter.post('/goodsIn/add', (req, res) => {
     const { deliveryDocument, items } = req.body;
 
     deliveryDocument.date = getDateTime();
@@ -36,9 +40,9 @@ rootRouter.post('/goodsIn/add', (req, res) => {
         else
             return res.json({ status: false, message: 'Failed to issue goods in. Error:' + err.code });
     })
-})
+});
 
-rootRouter.post('/inventoryTransaction/add', (req, res) => {
+RootRouter.post('/inventoryTransaction/add', (req, res) => {
     const { transactionType, deliveryDocument, items, prices } = req.body;
 
     deliveryDocument.date = getDateTime();
@@ -50,18 +54,18 @@ rootRouter.post('/inventoryTransaction/add', (req, res) => {
         else
             return res.json({ status: false, message: 'Failed to issue inventory trasaction. Error:' + err.code });
     })
-})
+});
 
-rootRouter.post('/getRecentFiveTransactions', (req, res) => {
+RootRouter.post('/getRecentFiveTransactions', (req, res) => {
     getRecentFiveTransactions((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve recent transactions' });
         else
             return res.json({ status: true, message: data });
     });
-})
+});
 
-rootRouter.post('/getSecondaryNumberModelName', (req, res) => {
+RootRouter.post('/getSecondaryNumberModelName', (req, res) => {
     const { primaryNumber } = req.body;
 
     getSecondaryNumberModelName(primaryNumber, (err, data) => {
@@ -76,9 +80,29 @@ rootRouter.post('/getSecondaryNumberModelName', (req, res) => {
             return res.json({ status: true, message: response });
         }
     })
+});
+
+RootRouter.post('/searchItem', (req, res) => {
+    const { skw } = req.body;
+
+    searchItem(skw, (err, data) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed to retrieve search results' });
+        else
+            return res.json({ status: true, message: data });
+    })
 })
 
-rootRouter.post('/model/all', (req, res) => {
+RootRouter.post('/count', (req, res) => {
+    count((err, data) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed to retrieve count data' });
+        else
+            return res.json({ status: true, message: data});
+    })
+})
+
+RootRouter.post('/model/all', (req, res) => {
     getModels((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve models data' });
@@ -87,7 +111,7 @@ rootRouter.post('/model/all', (req, res) => {
     });
 });
 
-rootRouter.post('/model/add', (req, res) => {
+RootRouter.post('/model/add', (req, res) => {
     const { model } = req.body;
 
     createModel(model, (err, created) => {
@@ -98,7 +122,7 @@ rootRouter.post('/model/add', (req, res) => {
     });
 });
 
-rootRouter.post('/warehouse/add', (req, res) => {
+RootRouter.post('/warehouse/add', (req, res) => {
     const { warehouse } = req.body;
 
     createWarehouse(warehouse, (err, created) => {
@@ -109,7 +133,7 @@ rootRouter.post('/warehouse/add', (req, res) => {
     });
 });
 
-rootRouter.post('/warehouse/all', (req, res) => {
+RootRouter.post('/warehouse/all', (req, res) => {
     getWarehouses((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve warehouses data' });
@@ -118,7 +142,7 @@ rootRouter.post('/warehouse/all', (req, res) => {
     });
 });
 
-rootRouter.post('/warehouse/type/all', (req, res) => {
+RootRouter.post('/warehouse/type/all', (req, res) => {
     getWarehouseTypes((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve warehouse types data' });
@@ -127,7 +151,7 @@ rootRouter.post('/warehouse/type/all', (req, res) => {
     });
 });
 
-rootRouter.post('/warehouse/bytype/all', (req, res) => {
+RootRouter.post('/warehouse/bytype/all', (req, res) => {
     const { warehouseTypes } = req.body;
 
     getWarehousesByTypes(warehouseTypes, (err, data) => {
@@ -138,7 +162,29 @@ rootRouter.post('/warehouse/bytype/all', (req, res) => {
     })
 })
 
-rootRouter.post('/territory/all', (req, res) => {
+RootRouter.post('/warehouse/stock', (req, res) => {
+    const { warehouseID } = req.body;
+
+    getWarehouseStock(warehouseID, (err, data) => { 
+        if (err)
+            return res.json({ status: false, message: 'Failed retrieve warehouse stock data' });
+        else
+            return res.json({ status: true, message: data });
+    })
+})
+
+RootRouter.post('/warehouse/name', (req, res) => {
+    const { warehouseID } = req.body;
+
+    getWarehouseName(warehouseID, (err, data) => { 
+        if (err)
+            return res.json({ status: false, message: 'Failed retrieve warehouse name' });
+        else
+            return res.json({ status: true, message: data });
+    })
+})
+
+RootRouter.post('/territory/all', (req, res) => {
     getTerritories((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve territories data' });
@@ -147,7 +193,7 @@ rootRouter.post('/territory/all', (req, res) => {
     });
 });
 
-rootRouter.post('/territory/add', (req, res) => {
+RootRouter.post('/territory/add', (req, res) => {
     const { territory } = req.body;
 
     createTerritory(territory, (err, created) => {
@@ -158,7 +204,7 @@ rootRouter.post('/territory/add', (req, res) => {
     });
 });
 
-rootRouter.post('/region/all', (req, res) => {
+RootRouter.post('/region/all', (req, res) => {
     getRegions((err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve regions data' });
@@ -167,7 +213,7 @@ rootRouter.post('/region/all', (req, res) => {
     });
 });
 
-rootRouter.post('/region/add', (req, res) => {
+RootRouter.post('/region/add', (req, res) => {
     const { region } = req.body;
 
     createRegion(region, (err, created) => {
@@ -178,4 +224,4 @@ rootRouter.post('/region/add', (req, res) => {
     });
 });
 
-export default rootRouter;
+export default RootRouter;

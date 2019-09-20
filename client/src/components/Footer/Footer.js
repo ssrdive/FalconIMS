@@ -33,7 +33,7 @@ export default function Footer(props) {
           <span>
             &copy; {1900 + new Date().getYear()}{" "}
             <a
-              href="https://www.falconims.com?ref=mdr-footer"
+              href="https://falconims.com?ref=mdr-footer"
               target="_blank"
               className={classes.a}
             >

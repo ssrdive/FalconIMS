@@ -14,104 +14,112 @@ import GoodsIn from 'views/Inventory/InventoryTransactions/GoodsIn';
 import GoodsOut from 'views/Inventory/InventoryTransactions/GoodsOut';
 import GoodsTransfer from 'views/Inventory/InventoryTransactions/GoodsTransfer';
 import GoodsReturn from 'views/Inventory/InventoryTransactions/GoodsReturn';
+import Stock from 'views/Inventory/Stock/Stock';
 
+const basePath = '/app/inventory';
 
 const inventoryRoutes = [
   {
     path: '/',
     title: 'Inventory Management',
     component: InventoryRoot,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/model/add',
     title: 'Add Model',
     component: AddModel,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/model/all',
     title: 'All Models',
     component: AllModel,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/model/edit/:id',
     title: 'Edit Model',
     component: EditModel,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/warehouse/add',
     title: 'Add Warehouse',
     component: AddWarehouse,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/warehouse/all',
     title: 'All Warehouses',
     component: AllWarehouse,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/warehouse/edit/:id',
     title: 'Edit Warehouse',
     component: EditWarehouse,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/search',
     title: 'Search',
     component: Search,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/goods-in',
     title: 'Goods In',
     component: GoodsIn,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/goods-out',
     title: 'Goods Out',
     component: GoodsOut,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/goods-transfer',
     title: 'Goods Transfer',
     component: GoodsTransfer,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/goods-return',
     title: 'Goods Return',
     component: GoodsReturn,
-    basePath: '/app/inventory'
+    basePath
+  },
+  {
+    path: '/stock',
+    title: 'Stock',
+    component: Stock,
+    basePath
   },
   {
     path: '/region/add',
     title: 'Add Region',
     component: AddRegion,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/region/all',
     title: 'All Regions',
     component: AllRegion,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/territory/add',
     title: 'Add Territory',
     component: AddTerritory,
-    basePath: '/app/inventory'
+    basePath
   },
   {
     path: '/territory/all',
     title: 'All Territories',
     component: AllTerritory,
-    basePath: '/app/inventory'
+    basePath
   },
 ];
 

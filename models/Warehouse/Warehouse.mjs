@@ -81,3 +81,29 @@ export const getWarehousesByTypes = (warehouseTypes, callback) => {
         })
     })
 }
+
+export const getWarehouseStock = (warehouseID, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null);
+        connection.query('SELECT MS.delivery_document_id, MS.primary_id, MS.secondary_id, MS.price, M.name as model, date, DDT.name as delivery_document_type FROM main_stock MS LEFT JOIN model M  ON MS.model_id = M.id LEFT JOIN delivery_document DD ON MS.delivery_document_id = DD.id LEFT JOIN delivery_document_type DDT ON DD.delivery_document_type_id = DDT.id WHERE DD.warehouse_id = ? AND sold = 0;', [warehouseID], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows);
+        })
+    })
+}
+
+export const getWarehouseName = (warehouseID, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if(poolErr)
+            return callback(poolErr, null)
+        connection.query('SELECT name FROM warehouse WHERE id = ?', [warehouseID], (err, rows, fields) => {
+            connection.release();
+            if(err)
+                return callback(err, null);
+            return callback(err, rows[0].name);
+        })
+    })
+}

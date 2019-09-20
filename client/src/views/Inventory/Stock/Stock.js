@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
@@ -16,14 +15,15 @@ import tableClasses from "styles/table.module.css";
 
 const useStyles = makeStyles(styles);
 
-export default function Search(props) {
+export default function Stock(props) {
     const classes = useStyles();
     const search = props.location.search;
     const params = new URLSearchParams(search);
-    const skw = params.get('skw');
+    const warehouseID = params.get('id');
 
     // State management hooks
-    const [searchResults, setSearchResults] = useState([]);
+    const [stocks, setStocks] = useState([]);
+    const [warehouseName, setWarehouseName] = useState(null);
     const [loading, setLoading] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
         submitted: false,
@@ -34,11 +34,11 @@ export default function Search(props) {
     // Lifecycle hooks
     useEffect(() => {
         setLoading(prevLoading => true);
-        falconAPI.post('/searchItem', {skw})
+        falconAPI.post('/warehouse/stock', {warehouseID})
             .then(response => {
                 setLoading(prevLoading => false);
                 if (response.data.status) {
-                    setSearchResults(prevSearchResults => {
+                    setStocks(prevStocks => {
                         return response.data.message;
                     })
                 } else {
@@ -55,21 +55,23 @@ export default function Search(props) {
                     messageBody: 'Error occurred during the API call'
                 })
             });
+            falconAPI.post('/warehouse/name', {warehouseID}).then(response => { response.data.status ? setWarehouseName(response.data.message) : setWarehouseName(prevWarehouseName => prevWarehouseName) });
     // eslint-disable-next-line
     }, []);
 
     // Interface pre-processing
     const tableBody = (
         <tbody>
-            {searchResults.map(searchResult => {
+            {stocks.map((stock, idx) => {
                 return <tr
-                    key={searchResult.delivery_document_id}>
-                    <td><Link>{searchResult.delivery_document_id}</Link></td>
-                    <td>{searchResult.model}</td>
-                    <td><Link to={props.basePath + '/stock?id=' + searchResult.warehouse_id}>{searchResult.warehouse}</Link></td>
-                    <td><Link>{searchResult.primary_id}</Link></td>
-                    <td>{searchResult.secondary_id}</td>
-                    <td>{searchResult.price}</td>
+                    key={idx}>
+                    <td>{stock.delivery_document_id}</td>
+                    <td>{stock.date}</td>
+                    <td>{stock.delivery_document_type}</td>
+                    <td>{stock.model}</td>
+                    <td>{stock.primary_id}</td>
+                    <td>{stock.secondary_id}</td>
+                    <td>{stock.price}</td>
                 </tr>;
             })}
         </tbody>
@@ -100,14 +102,15 @@ export default function Search(props) {
                     </CardHeader>
                     <CardBody>
                         {pageHeader}
-                        <h4>Search results matching <b>{skw}</b></h4>
+                        <h2>{warehouseName}</h2>
                         <div className={tableClasses.HelloTable}>
                             <table className={classes.Hello}>
                                 <thead>
                                     <tr>
                                         <th>Delivery Document ID</th>
+                                        <th>Date</th>
+                                        <th>Delivery Document Type</th>
                                         <th>Model</th>
-                                        <th>Warehouse</th>
                                         <th>Primary ID</th>
                                         <th>Secondary ID</th>
                                         <th>Price</th>

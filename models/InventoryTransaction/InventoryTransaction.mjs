@@ -172,7 +172,7 @@ export const getRecentFiveTransactions = (callback) => {
     Pool.getConnection((poolErr, connection) => {
         if (poolErr)
             return callback(poolErr, null);
-        connection.query('SELECT DD.id, DDT.name as delivery_document_type, W.name as to_warehouse, W2.name as from_warehouse, date FROM delivery_document DD LEFT JOIN delivery_document_type DDT on DD.delivery_document_type_id = DDT.id LEFT JOIN warehouse W ON DD.warehouse_id = W.id LEFT JOIN warehouse W2 ON DD.from_warehouse_id = W2.id ORDER BY DD.date DESC LIMIT 5 OFFSET 0;', (err, rows, fields) => {
+        connection.query('SELECT DD.id, DDT.name as delivery_document_type, W.name as to_warehouse, W.id as to_warehouse_id, W2.name as from_warehouse, W2.id as from_warehouse_id, date FROM delivery_document DD LEFT JOIN delivery_document_type DDT on DD.delivery_document_type_id = DDT.id LEFT JOIN warehouse W ON DD.warehouse_id = W.id LEFT JOIN warehouse W2 ON DD.from_warehouse_id = W2.id ORDER BY DD.date DESC LIMIT 5 OFFSET 0;', (err, rows, fields) => {
             connection.release();
             if(err)
                 return callback(err, null);

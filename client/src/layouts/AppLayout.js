@@ -33,7 +33,7 @@ const switchRoutes = (
       }
       return null;
     })}
-    <Redirect from="/app" to="/app/dashboard" />
+    <Redirect from="/app" to="/app/inventory" />
   </Switch>
 );
 
