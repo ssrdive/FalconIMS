@@ -97,8 +97,8 @@ export default function GoodsReturn(props) {
 
     // Life cycle hooks
     useEffect(() => {
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Main Stock'] }, 'mainStock');
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Authorized Dealer', 'Showroom'] }, 'goodsFromWarehouse');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Main Stock' }, 'mainStock');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Authorized Dealer,Showroom' }, 'goodsFromWarehouse');
     }, []);
 
     // Functions

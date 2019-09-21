@@ -9,6 +9,7 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import Spinner from "components/UI/Spinner/Spinner";
 import SnackbarContent from "components/Snackbar/SnackbarContent.js";
+import Success from "components/Typography/Success.js";
 import styles from "styles/styles";
 import falconAPI from "falcon-api";
 
@@ -67,7 +68,7 @@ export default function Search(props) {
                     <td><Link>{searchResult.delivery_document_id}</Link></td>
                     <td>{searchResult.model}</td>
                     <td><Link to={props.basePath + '/stock?id=' + searchResult.warehouse_id}>{searchResult.warehouse}</Link></td>
-                    <td><Link>{searchResult.primary_id}</Link></td>
+                    <td><Link to={props.basePath + '/stock-details?id=' + searchResult.primary_id}>{searchResult.primary_id}</Link></td>
                     <td>{searchResult.secondary_id}</td>
                     <td>{searchResult.price}</td>
                 </tr>;
@@ -100,7 +101,7 @@ export default function Search(props) {
                     </CardHeader>
                     <CardBody>
                         {pageHeader}
-                        <h4>Search results matching <b>{skw}</b></h4>
+                        <Success><h4>Search results matching <b>{skw}</b></h4></Success>
                         <div className={tableClasses.HelloTable}>
                             <table className={classes.Hello}>
                                 <thead>

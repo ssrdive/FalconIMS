@@ -97,8 +97,8 @@ export default function GoodsTransfer(props) {
 
     // Life cycle hooks
     useEffect(() => {
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Authorized Dealer', 'Showroom'] }, 'goodsTransferFromWarehouse');
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Authorized Dealer', 'Showroom'] }, 'goodsTransferToWarehouse');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Authorized Dealer,Showroom' }, 'goodsTransferFromWarehouse');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Authorized Dealer,Showroom' }, 'goodsTransferToWarehouse');
     }, []);
 
     // Functions

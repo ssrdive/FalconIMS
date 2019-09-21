@@ -97,8 +97,8 @@ export default function GoodsIn(props) {
 
     // Life cycle hooks
     useEffect(() => {
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Importer']}, 'importer');
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: ['Main Stock']}, 'mainStock');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Importer'}, 'importer');
+        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Main Stock'}, 'mainStock');
     }, []);
 
     // Functions

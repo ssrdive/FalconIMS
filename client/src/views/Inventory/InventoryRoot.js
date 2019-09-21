@@ -66,7 +66,17 @@ export default function InventoryRoot(props) {
                     messageBody: 'Error occurred during the API call'
                 })
             });
-        falconAPI.post('/count').then(response => { response.data.status ? setCountState(response.data.message) : setCountState(oldCountState => oldCountState) });
+        falconAPI.post('/count').then(response => {
+            response.data.status ? setCountState(response.data.message) :
+                setCountState(oldCountState => {
+                    return {
+                        delivery_document_count: 'N/A',
+                        warehouse_count: 'N/A',
+                        model_count: 'N/A',
+                        user_count: 'N/A'
+                    }
+                });
+        });
     }, []);
 
     // Functions

@@ -17,15 +17,15 @@ import tableClasses from "styles/table.module.css";
 
 const useStyles = makeStyles(styles);
 
-export default function Stock(props) {
+export default function StockDetails(props) {
     const classes = useStyles();
     const search = props.location.search;
     const params = new URLSearchParams(search);
-    const warehouseID = params.get('id');
+    const primaryID = params.get('id');
 
     // State management hooks
-    const [stocks, setStocks] = useState([]);
-    const [warehouseName, setWarehouseName] = useState(null);
+    const [currentLocation, setCurrentLocation] = useState([]);
+    const [stockHistory, setStockHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
         submitted: false,
@@ -36,12 +36,15 @@ export default function Stock(props) {
     // Lifecycle hooks
     useEffect(() => {
         setLoading(prevLoading => true);
-        falconAPI.post('/warehouse/stock', { warehouseID })
+        falconAPI.post('/stockDetails', { primaryID })
             .then(response => {
                 setLoading(prevLoading => false);
                 if (response.data.status) {
-                    setStocks(prevStocks => {
-                        return response.data.message;
+                    setCurrentLocation(prevCurrentLocation => {
+                        return response.data.message.currentData;
+                    })
+                    setStockHistory(prevStockHistory => {
+                        return response.data.message.historyData;
                     })
                 } else {
                     setSubmitStatus({
@@ -57,24 +60,43 @@ export default function Stock(props) {
                     messageBody: 'Error occurred during the API call'
                 })
             });
-        falconAPI.post('/warehouse/name', { warehouseID }).then(response => { response.data.status ? setWarehouseName(response.data.message) : setWarehouseName(prevWarehouseName => prevWarehouseName) });
-        // eslint-disable-next-line
+    // eslint-disable-next-line
     }, []);
 
     // Interface pre-processing
-    const tableBody = (
+    const currentLocationTableBody = (
         <tbody>
-            {stocks.map((stock, idx) => {
+            {currentLocation.map((item, id) => {
                 return <tr
-                    key={idx}>
-                    <td>{stock.delivery_document_id}</td>
-                    <td>{stock.date}</td>
-                    <td>{stock.in_stock_for} days</td>
-                    <td>{stock.delivery_document_type}</td>
-                    <td>{stock.model}</td>
-                    <td><Link to={props.basePath + '/stock-details?id=' + stock.primary_id}>{stock.primary_id}</Link></td>
-                    <td>{stock.secondary_id}</td>
-                    <td>{stock.price}</td>
+                    key={id}>
+                        <td>{item.delivery_document_id}</td>
+                        <td>{item.delivery_document_type}</td>
+                        <td>{item.in_stock_for}</td>
+                        <td><Link to={props.basePath + '/stock?id=' + item.warehouse_id}>{item.warehouse}</Link></td>
+                        <td>{item.date}</td>
+                        <td>{item.model}</td>
+                        <td>{item.primary_id}</td>
+                        <td>{item.secondary_id}</td>
+                        <td>{item.price}</td>
+                    </tr>
+            })}
+        </tbody>
+    );
+    const historyTableBody = (
+        <tbody>
+            {stockHistory.map((item, id) => {
+                return <tr
+                    key={id}>
+                    <td>{item.delivery_document_id}</td>
+                    <td>{item.delivery_document_type}</td>
+                    <td>{item.in_stock_for}</td>
+                    <td><Link to={props.basePath + '/stock?id=' + item.warehouse_id}>{item.warehouse}</Link></td>
+                    <td>{item.date_in}</td>
+                    <td>{item.date_out}</td>
+                    <td>{item.model}</td>
+                    <td>{item.primary_id}</td>
+                    <td>{item.secondary_id}</td>
+                    <td>{item.price}</td>
                 </tr>;
             })}
         </tbody>
@@ -105,22 +127,43 @@ export default function Stock(props) {
                     </CardHeader>
                     <CardBody>
                         {pageHeader}
-                        <Success><h3>{warehouseName == null ? null : warehouseName.name + ' - ' + warehouseName.address}</h3></Success>
+                        <Success><h3>Current Location</h3></Success>
                         <div className={tableClasses.HelloTable}>
                             <table className={classes.Hello}>
                                 <thead>
                                     <tr>
                                         <th>Delivery Document ID</th>
-                                        <th>Date</th>
-                                        <th>In Stock For</th>
                                         <th>Delivery Document Type</th>
+                                        <th>In Stock For</th>
+                                        <th>Warehouse</th>
+                                        <th>Date</th>
                                         <th>Model</th>
                                         <th>Primary ID</th>
                                         <th>Secondary ID</th>
                                         <th>Price</th>
                                     </tr>
                                 </thead>
-                                {tableBody}
+                                {currentLocationTableBody}
+                            </table>
+                        </div>
+                        <Success><h3>Stock History</h3></Success>
+                        <div className={tableClasses.HelloTable}>
+                            <table className={classes.Hello}>
+                                <thead>
+                                    <tr>
+                                        <th>Delivery Document ID</th>
+                                        <th>Delivery Document Type</th>
+                                        <th>In Stock For</th>
+                                        <th>Warehouse</th>
+                                        <th>Date In</th>
+                                        <th>Date Out</th>
+                                        <th>Model</th>
+                                        <th>Primary ID</th>
+                                        <th>Secondary ID</th>
+                                        <th>Price</th>
+                                    </tr>
+                                </thead>
+                                {historyTableBody}
                             </table>
                         </div>
                     </CardBody>

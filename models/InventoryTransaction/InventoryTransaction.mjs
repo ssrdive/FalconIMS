@@ -174,7 +174,33 @@ export const getRecentFiveTransactions = (callback) => {
             return callback(poolErr, null);
         connection.query('SELECT DD.id, DDT.name as delivery_document_type, W.name as to_warehouse, W.id as to_warehouse_id, W2.name as from_warehouse, W2.id as from_warehouse_id, date FROM delivery_document DD LEFT JOIN delivery_document_type DDT on DD.delivery_document_type_id = DDT.id LEFT JOIN warehouse W ON DD.warehouse_id = W.id LEFT JOIN warehouse W2 ON DD.from_warehouse_id = W2.id ORDER BY DD.date DESC LIMIT 5 OFFSET 0;', (err, rows, fields) => {
             connection.release();
-            if(err)
+            if (err)
+                return callback(err, null);
+            return callback(err, rows);
+        })
+    })
+}
+
+export const getStockHistory = (primaryID, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null);
+        connection.query('SELECT SH.delivery_document_id, SH.primary_id, SH.secondary_id, DATEDIFF(date_in, date_out) as in_stock_for, SH.price, SH.date_in, SH.date_out, DDT.name AS delivery_document_type, W.name AS warehouse, W.id as warehouse_id, W.id as warehouse_id, M.name AS model FROM stock_history SH LEFT JOIN delivery_document DD ON SH.delivery_document_id = DD.id LEFT JOIN delivery_document_type DDT ON DD.delivery_document_type_id = DDT.id LEFT JOIN warehouse W ON warehouse_id = W.id LEFT JOIN model M ON SH.model_id = M.id WHERE primary_id = ? ORDER BY date_in DESC;', [primaryID], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows);
+        })
+    })
+}
+
+export const getStockCurrentLocation = (primaryID, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if(poolErr)
+            return callback(poolErr, null);
+        connection.query('SELECT MS.delivery_document_id, MS.primary_id, MS.secondary_id, DATEDIFF(NOW(), DD.date) as in_stock_for, MS.price, DD.date, W.name AS warehouse, W.id as warehouse_id, DDT.name AS delivery_document_type, M.name AS model FROM main_stock MS LEFT JOIN delivery_document DD ON MS.delivery_document_id = DD.id LEFT JOIN warehouse W ON DD.warehouse_id = W.id LEFT JOIN delivery_document_type DDT ON DD.delivery_document_type_id = DDT.id LEFT JOIN model M ON MS.model_id = M.id WHERE primary_id = ?;', [primaryID], (err, rows, fields) => {
+            connection.release();
+            if (err)
                 return callback(err, null);
             return callback(err, rows);
         })

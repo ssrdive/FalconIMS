@@ -6,7 +6,9 @@ import {
     createGoodsIn,
     createInventoryTransaction,
     getRecentFiveTransactions,
-    getSecondaryNumberModelName
+    getSecondaryNumberModelName,
+    getStockHistory,
+    getStockCurrentLocation
 } from '../models/InventoryTransaction/InventoryTransaction';
 import { getModels, createModel } from '../models/Model/Model';
 import {
@@ -102,6 +104,29 @@ RootRouter.post('/count', (req, res) => {
     })
 })
 
+RootRouter.post('/stockDetails', (req, res) => {
+    const { primaryID } = req.body;
+
+    getStockHistory(primaryID, (err, historyData) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed to retrieve stock details' });
+        else {
+            getStockCurrentLocation(primaryID, (err, currentData) => {
+                if (err)
+                    return res.json({ status: false, message: 'Failed to retrieve stock details' });
+                else
+                    return res.json({
+                        status: true,
+                        message: {
+                            historyData,
+                            currentData
+                        }
+                    })
+            })
+        }
+    })
+})
+
 RootRouter.post('/model/all', (req, res) => {
     getModels((err, data) => {
         if (err)
@@ -153,8 +178,9 @@ RootRouter.post('/warehouse/type/all', (req, res) => {
 
 RootRouter.post('/warehouse/bytype/all', (req, res) => {
     const { warehouseTypes } = req.body;
+    const warehouseTypesArr = warehouseTypes.split(',');
 
-    getWarehousesByTypes(warehouseTypes, (err, data) => {
+    getWarehousesByTypes(warehouseTypesArr, (err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed to retrieve warehouses data' });
         else

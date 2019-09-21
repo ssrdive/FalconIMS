@@ -9,12 +9,13 @@ import AddRegion from 'views/Inventory/Region/AddRegion';
 import AllRegion from 'views/Inventory/Region/AllRegion';
 import AddTerritory from 'views/Inventory/Territory/AddTerritory';
 import AllTerritory from 'views/Inventory/Territory/AllTerritory';
-import Search from 'views/Inventory/Search';
+import Search from 'views/Inventory/Search/Search';
 import GoodsIn from 'views/Inventory/InventoryTransactions/GoodsIn';
 import GoodsOut from 'views/Inventory/InventoryTransactions/GoodsOut';
 import GoodsTransfer from 'views/Inventory/InventoryTransactions/GoodsTransfer';
 import GoodsReturn from 'views/Inventory/InventoryTransactions/GoodsReturn';
 import Stock from 'views/Inventory/Stock/Stock';
+import StockDetails from 'views/Inventory/StockDetails/StockDetails';
 
 const basePath = '/app/inventory';
 
@@ -95,6 +96,12 @@ const inventoryRoutes = [
     path: '/stock',
     title: 'Stock',
     component: Stock,
+    basePath
+  },
+  {
+    path: '/stock-details',
+    title: 'Stock Details',
+    component: StockDetails,
     basePath
   },
   {
