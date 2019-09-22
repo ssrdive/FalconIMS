@@ -15,9 +15,11 @@ import {
     getWarehouseTypes,
     createWarehouse,
     getWarehouses,
+    editWarehouse,
     getWarehousesByTypes,
     getWarehouseStock,
-    getWarehouseName
+    getWarehouseName,
+    getWarehouseDetails
 } from '../models/Warehouse/Warehouse';
 import { getTerritories, createTerritory } from '../models/Territory/Territory';
 import { getRegions, createRegion } from '../models/Region/Region';
@@ -205,6 +207,28 @@ RootRouter.post('/warehouse/name', (req, res) => {
     getWarehouseName(warehouseID, (err, data) => { 
         if (err)
             return res.json({ status: false, message: 'Failed retrieve warehouse name' });
+        else
+            return res.json({ status: true, message: data });
+    })
+})
+
+RootRouter.post('/warehouse/edit', (req, res) => {
+    const { warehouseID, warehouse } = req.body;
+
+    editWarehouse(warehouseID, warehouse, (err, edited) => {
+        if (edited)
+            return res.json({ status: true, message: 'Warehouse successfully edited' });
+        else
+            return res.json({ status: false, message: 'Failed to edit warehouse' });
+    })
+})
+
+RootRouter.post('/warehouse/details', (req, res) => {
+    const { warehouseID } = req.body;
+
+    getWarehouseDetails(warehouseID, (err, data) => { 
+        if (err)
+            return res.json({ status: false, message: 'Failed retrieve warehouse details' });
         else
             return res.json({ status: true, message: data });
     })

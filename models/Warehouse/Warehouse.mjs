@@ -26,6 +26,32 @@ export const createWarehouse = (warehouse, callback) => {
     })
 }
 
+export const editWarehouse = (warehouseID, warehouse, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, false);
+        connection.query('UPDATE warehouse SET ? WHERE id = ?;', [warehouse, warehouseID], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, false);
+            return callback(err, true);
+        })
+    })
+}
+
+export const getWarehouseDetails = (warehouseID, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null);
+        connection.query('SELECT W.name, W.address, W.telephone FROM warehouse W WHERE W.id = ?', [warehouseID], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows[0]);
+        })
+    })
+}
+
 export const getWarehouses = (callback) => {
     Pool.getConnection((poolErr, connection) => {
         if (poolErr)

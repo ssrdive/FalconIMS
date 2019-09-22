@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
@@ -59,7 +60,7 @@ export default function AllWarehouse(props) {
             {warehouses.map(warehouse => {
                 return <tr
                     key={warehouse.id}>
-                    <td>{warehouse.id}</td>
+                    <td><Link to={props.basePath + '/warehouse/edit/' + warehouse.id}>{warehouse.id}</Link></td>
                     <td>{warehouse.name}</td>
                     <td>{warehouse.type}</td>
                     <td>{warehouse.address}</td>
