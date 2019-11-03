@@ -333,7 +333,7 @@ export default function GoodsReturn(props) {
                                 })
                             }
                         </GridContainer>
-                        <Button onClick={submitFormHandler}>Issue Goods In</Button>
+                        <Button onClick={submitFormHandler}>Issue Goods Return</Button>
                     </CardBody>
                 </Card>
             </GridItem>

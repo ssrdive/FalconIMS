@@ -10,7 +10,7 @@ import Input from "components/UI/Input/Input";
 import Button from "components/CustomButtons/Button.js";
 import SnackbarContent from "components/Snackbar/SnackbarContent.js";
 import Spinner from "components/UI/Spinner/Spinner";
-import MoveItem from "views/Inventory/InventoryTransactions/MoveItem/MoveItem";
+import GoodsInItem from "views/Inventory/User/AccessItem/AccessItem";
 import styles from "styles/styles";
 import falconAPI from "falcon-api";
 
@@ -21,7 +21,59 @@ export default function GoodsIn(props) {
 
     // State management hooks
     const [form, setForm] = useState({
-        mainStock: {
+        username: {
+            elementType: 'input',
+            elementConfig: {
+                type: 'text',
+                placeholder: 'Username'
+            },
+            value: '',
+            validation: {
+                required: true
+            },
+            valid: false,
+            touched: false
+        },
+        password: {
+            elementType: 'password',
+            elementConfig: {
+                type: 'password',
+                placeholder: 'Password'
+            },
+            value: '',
+            validation: {
+                required: true
+            },
+            valid: false,
+            touched: false
+        },
+        name: {
+            elementType: 'input',
+            elementConfig: {
+                type: 'text',
+                placeholder: 'Name'
+            },
+            value: '',
+            validation: {
+                required: true
+            },
+            valid: false,
+            touched: false
+        },
+        email: {
+            elementType: 'input',
+            elementConfig: {
+                type: 'text',
+                placeholder: 'Email'
+            },
+            value: '',
+            validation: {
+                required: true
+            },
+            valid: false,
+            touched: false
+        },
+        region: {
             elementType: 'select',
             elementConfig: {
                 options: [
@@ -32,7 +84,7 @@ export default function GoodsIn(props) {
             validation: {},
             valid: true
         },
-        goodsOutWarehouse: {
+        territory: {
             elementType: 'select',
             elementConfig: {
                 options: [
@@ -42,45 +94,6 @@ export default function GoodsIn(props) {
             value: 'default',
             validation: {},
             valid: true
-        },
-        vehicleNo: {
-            elementType: 'input',
-            elementConfig: {
-                type: 'text',
-                placeholder: 'Vehicle Number'
-            },
-            value: '',
-            validation: {
-                required: true
-            },
-            valid: false,
-            touched: false
-        },
-        driverName: {
-            elementType: 'input',
-            elementConfig: {
-                type: 'text',
-                placeholder: 'Driver Name'
-            },
-            value: '',
-            validation: {
-                required: true
-            },
-            valid: false,
-            touched: false
-        },
-        driverTelephone: {
-            elementType: 'input',
-            elementConfig: {
-                type: 'text',
-                placeholder: 'Driver Telephone'
-            },
-            value: '',
-            validation: {
-                required: true
-            },
-            valid: false,
-            touched: false
         }
     });
     const [formIsValid, setFormIsValid] = useState(false);
@@ -90,21 +103,21 @@ export default function GoodsIn(props) {
         messageBody: ''
     });
     const [loading, setLoading] = useState(false);
-    const blankItem = { model: 'Model', primaryNumber: '', secondaryNumber: 'Primary Number', price: '' };
+    const blankItem = { accessLevel: '', value: '' };
     const [itemState, setItemState] = useState([
-        { model: 'Model', primaryNumber: '', secondaryNumber: 'Primary Number', price: '' }
+        { accessLevel: '', value: '' }
     ]);
 
     // Life cycle hooks
     useEffect(() => {
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Main Stock' }, 'mainStock');
-        setSelectValues('/warehouse/bytype/all', { warehouseTypes: 'Authorized Dealer,Showroom' }, 'goodsOutWarehouse');
+        setSelectValues('/region/all', 'region');
+        setSelectValues('/territory/all', 'territory');
     }, []);
 
     // Functions
-    const setSelectValues = (URL, params, selectName) => {
+    const setSelectValues = (URL, selectName) => {
         setLoading(prevLoading => true);
-        falconAPI.post(URL, params)
+        falconAPI.post(URL)
             .then(response => {
                 setLoading(prevLoading => false);
                 if (response.data.status && response.data.message.length > 0) {
@@ -190,21 +203,19 @@ export default function GoodsIn(props) {
             });
             return;
         }
-        const deliveryDocument = {
-            warehouse_id: form.goodsOutWarehouse.value,
-            from_warehouse_id: form.mainStock.value,
-            vehicle_no: form.vehicleNo.value,
-            driver_name: form.driverName.value,
-            driver_telephone: form.driverTelephone.value
+        const newUser = {
+            username: form.username.value,
+            password: form.password.value,
+            email: form.email.value,
+            name: form.name.value,
+            region: form.region.value,
+            territory: form.territory.value
         }
         const items = [];
-        const prices = [];
-        // eslint-disable-next-line
         itemState.map((itm) => {
-            items.push([itm.primaryNumber]);
-            prices.push([itm.price]);
+            return items.push([itm.accessLevel, itm.value]);
         });
-        falconAPI.post('/inventoryTransaction/add', { transactionType: 'Goods Out', deliveryDocument, items, prices })
+        falconAPI.post('/user/add', { newUser, accessLevels: items })
             .then(response => {
                 setLoading(prevLoading => false);
                 setSubmitStatus({
@@ -240,25 +251,10 @@ export default function GoodsIn(props) {
         setItemState([...itemState, { ...blankItem }]);
     }
 
-    const handleEnterPressed = (e, idx) => {
-        if (e.keyCode === 13) {
-            setPrimaryNumberModelHandler(idx, 'Loading...', 'Loading...');
-            falconAPI.post('/getSecondaryNumberModelName', { primaryNumber: itemState[idx].primaryNumber })
-                .then(response => {
-                    const { secondaryNumber, model } = response.data.message;
-                    setPrimaryNumberModelHandler(idx, secondaryNumber, model);
-                })
-                .catch(error => {
-                    setPrimaryNumberModelHandler(idx, 'Error', 'Error');
-                })
-        }
-    }
-
-    const setPrimaryNumberModelHandler = (idx, primaryNumber, model) => {
+    const setModel = (idx, model) => {
         const updatedItems = [...itemState];
-        updatedItems[idx].secondaryNumber = primaryNumber;
-        updatedItems[idx].model = model;
-        setItemState(prevItemState => updatedItems);
+        updatedItems[idx].accessLevel = model;
+        setItemState(updatedItems);
     }
 
     // Interface pre-processing
@@ -313,7 +309,7 @@ export default function GoodsIn(props) {
                         </GridContainer>
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={12}>
-                                <Button color='info' onClick={addItem}>Add Item</Button>
+                                <Button color='info' onClick={addItem}>Add Access Level</Button>
                             </GridItem>
                         </GridContainer>
                         <GridContainer>
@@ -321,19 +317,19 @@ export default function GoodsIn(props) {
                                 itemState.map((val, idx) => {
                                     return (
                                         <GridItem key={idx} xs={12} sm={12} md={12}>
-                                            <MoveItem
+                                            <GoodsInItem
                                                 idx={idx}
                                                 itemState={itemState}
                                                 handleItemChange={handleItemChange}
-                                                handleEnterPressed={(e) => handleEnterPressed(e, idx)}
                                                 handleItemDelete={(e) => handleItemDelete(e, idx)}
+                                                setModel={setModel}
                                             />
                                         </GridItem>
                                     );
                                 })
                             }
                         </GridContainer>
-                        <Button onClick={submitFormHandler}>Issue Goods Out</Button>
+                        <Button onClick={submitFormHandler}>Add User</Button>
                     </CardBody>
                 </Card>
             </GridItem>

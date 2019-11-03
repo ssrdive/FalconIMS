@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import { makeStyles } from "@material-ui/core/styles";
 import GridItem from "components/Grid/GridItem.js";
@@ -9,7 +8,6 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import Spinner from "components/UI/Spinner/Spinner";
 import SnackbarContent from "components/Snackbar/SnackbarContent.js";
-import Success from "components/Typography/Success.js";
 import styles from "styles/styles";
 import falconAPI from "falcon-api";
 
@@ -17,14 +15,11 @@ import tableClasses from "styles/table.module.css";
 
 const useStyles = makeStyles(styles);
 
-export default function Search(props) {
+export default function AllModel(props) {
     const classes = useStyles();
-    const search = props.location.search;
-    const params = new URLSearchParams(search);
-    const skw = params.get('skw');
 
     // State management hooks
-    const [searchResults, setSearchResults] = useState([]);
+    const [models, setModels] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
         submitted: false,
@@ -35,11 +30,11 @@ export default function Search(props) {
     // Lifecycle hooks
     useEffect(() => {
         setLoading(prevLoading => true);
-        falconAPI.post('/searchItem', {skw})
+        falconAPI.post('/user/all')
             .then(response => {
                 setLoading(prevLoading => false);
                 if (response.data.status) {
-                    setSearchResults(prevSearchResults => {
+                    setModels(prevModels => {
                         return response.data.message;
                     })
                 } else {
@@ -56,21 +51,23 @@ export default function Search(props) {
                     messageBody: 'Error occurred during the API call'
                 })
             });
-    // eslint-disable-next-line
     }, []);
 
     // Interface pre-processing
+    const tableValues = [];
+    models.map(model => {
+        return tableValues.push([model.id, model.name, model.country, model.primary_name, model.secondary_name])
+    });
     const tableBody = (
         <tbody>
-            {searchResults.map(searchResult => {
+            {models.map(model => {
                 return <tr
-                    key={searchResult.delivery_document_id}>
-                    <td><Link>{searchResult.delivery_document_id}</Link></td>
-                    <td>{searchResult.model}</td>
-                    <td><Link to={props.basePath + '/stock?id=' + searchResult.warehouse_id}>{searchResult.warehouse}</Link></td>
-                    <td><Link to={props.basePath + '/stock-details?id=' + searchResult.primary_id}>{searchResult.primary_id}</Link></td>
-                    <td>{searchResult.secondary_id}</td>
-                    <td>{searchResult.price}</td>
+                    key={model.id}>
+                    <td>{model.id}</td>
+                    <td>{model.username}</td>
+                    <td>{model.name}</td>
+                    <td>{model.email}</td>
+                    <td>{model.access_levels}</td>
                 </tr>;
             })}
         </tbody>
@@ -101,17 +98,15 @@ export default function Search(props) {
                     </CardHeader>
                     <CardBody>
                         {pageHeader}
-                        <Success><h4>Search results matching <b>{skw}</b></h4></Success>
                         <div className={tableClasses.HelloTable}>
                             <table className={classes.Hello}>
                                 <thead>
                                     <tr>
-                                        <th>Delivery Document ID</th>
-                                        <th>Model</th>
-                                        <th>Warehouse</th>
-                                        <th>Primary ID</th>
-                                        <th>Secondary ID</th>
-                                        <th>Price</th>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Access Levels</th>
                                     </tr>
                                 </thead>
                                 {tableBody}

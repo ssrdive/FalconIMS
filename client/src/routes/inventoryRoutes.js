@@ -5,15 +5,19 @@ import EditModel from 'views/Inventory/Model/EditModel';
 import AddWarehouse from 'views/Inventory/Warehouse/AddWarehouse';
 import AllWarehouse from 'views/Inventory/Warehouse/AllWarehouse';
 import EditWarehouse from 'views/Inventory/Warehouse/EditWarehouse';
+import AddUser from 'views/Inventory/User/AddUser';
+import AllUser from 'views/Inventory/User/AllUser';
 import AddRegion from 'views/Inventory/Region/AddRegion';
 import AllRegion from 'views/Inventory/Region/AllRegion';
 import AddTerritory from 'views/Inventory/Territory/AddTerritory';
 import AllTerritory from 'views/Inventory/Territory/AllTerritory';
-import Search from 'views/Inventory/Search/Search';
+import ItemSearch from 'views/Inventory/ItemSearch/ItemSearch';
+import DocumentSearch from 'views/Inventory/DocumentSearch/DocumentSearch';
 import GoodsIn from 'views/Inventory/InventoryTransactions/GoodsIn';
 import GoodsOut from 'views/Inventory/InventoryTransactions/GoodsOut';
 import GoodsTransfer from 'views/Inventory/InventoryTransactions/GoodsTransfer';
 import GoodsReturn from 'views/Inventory/InventoryTransactions/GoodsReturn';
+import AllDocuments from 'views/Inventory/AllDocuments/AllDocuments';
 import Stock from 'views/Inventory/Stock/Stock';
 import StockDetails from 'views/Inventory/StockDetails/StockDetails';
 
@@ -63,9 +67,27 @@ const inventoryRoutes = [
     basePath
   },
   {
-    path: '/search',
-    title: 'Search',
-    component: Search,
+    path: '/user/add',
+    title: 'Add User',
+    component: AddUser,
+    basePath
+  },
+  {
+    path: '/user/all',
+    title: 'All Users',
+    component: AllUser,
+    basePath
+  },
+  {
+    path: '/itemSearch',
+    title: 'Item Search',
+    component: ItemSearch,
+    basePath
+  },
+  {
+    path: '/documentSearch',
+    title: 'Document Search',
+    component: DocumentSearch,
     basePath
   },
   {
@@ -90,6 +112,12 @@ const inventoryRoutes = [
     path: '/goods-return',
     title: 'Goods Return',
     component: GoodsReturn,
+    basePath
+  },
+  {
+    path: '/all-documents',
+    title: 'All Documents',
+    component: AllDocuments,
     basePath
   },
   {

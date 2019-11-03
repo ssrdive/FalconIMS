@@ -1,6 +1,6 @@
 import React from 'react';
 
-import classes from './Input.module.css';
+import classes from 'components/UI/Input/Input.module.css';
 
 const input = props => {
     let inputElement = null;
@@ -47,7 +47,7 @@ const input = props => {
 
     return (
         <div className={classes.Input}>
-            <label className={classes.Label}>{props.label}</label>
+            {<label className={classes.Label}>{props.label}</label>}
             {inputElement}
         </div>
     );

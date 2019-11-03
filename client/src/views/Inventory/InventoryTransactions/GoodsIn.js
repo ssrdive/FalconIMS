@@ -138,7 +138,6 @@ export default function GoodsIn(props) {
                 }
             })
             .catch(error => {
-                console.log(error);
                 setLoading(prevLoading => false);
                 setSubmitStatus({
                     submitted: true, messageType: 'error', messageBody: 'Error occurred during the API call'

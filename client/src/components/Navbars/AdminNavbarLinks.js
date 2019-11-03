@@ -15,11 +15,14 @@ import Dashboard from "@material-ui/icons/Dashboard";
 // core components
 import Button from "components/CustomButtons/Button.js";
 
+import { useAuth } from "context/auth";
+
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
+  const { setAuthTokens } = useAuth();
   const classes = useStyles();
   const [openProfile, setOpenProfile] = React.useState(null);
   const handleClickProfile = event => {
@@ -31,6 +34,10 @@ export default function AdminNavbarLinks() {
   };
   const handleCloseProfile = () => {
     setOpenProfile(null);
+  };
+  const logout = () => {
+    setAuthTokens('-1', null);
+    window.location.replace("https://falconims.com/login")
   };
   return (
     <div>
@@ -85,7 +92,7 @@ export default function AdminNavbarLinks() {
                 <ClickAwayListener onClickAway={handleCloseProfile}>
                   <MenuList role="menu">
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={logout}
                       className={classes.dropdownItem}
                     >
                       Logout

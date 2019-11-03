@@ -16,11 +16,11 @@ import tableClasses from "styles/table.module.css";
 
 const useStyles = makeStyles(styles);
 
-export default function AllModel(props) {
+export default function AllDocuments(props) {
     const classes = useStyles();
 
     // State management hooks
-    const [models, setModels] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [submitStatus, setSubmitStatus] = useState({
         submitted: false,
@@ -31,11 +31,11 @@ export default function AllModel(props) {
     // Lifecycle hooks
     useEffect(() => {
         setLoading(prevLoading => true);
-        falconAPI.post('/model/all')
+        falconAPI.post('/getAllDocuments')
             .then(response => {
                 setLoading(prevLoading => false);
                 if (response.data.status) {
-                    setModels(prevModels => {
+                    setSearchResults(prevSearchResults => {
                         return response.data.message;
                     })
                 } else {
@@ -52,23 +52,22 @@ export default function AllModel(props) {
                     messageBody: 'Error occurred during the API call'
                 })
             });
+    // eslint-disable-next-line
     }, []);
 
     // Interface pre-processing
-    const tableValues = [];
-    models.map(model => {
-        return tableValues.push([model.id, model.name, model.country, model.primary_name, model.secondary_name])
-    });
     const tableBody = (
         <tbody>
-            {models.map(model => {
+            {searchResults.map(searchResult => {
                 return <tr
-                    key={model.id}>
-                    <td><Link to={props.basePath + '/model/edit/' + model.id}>{model.id}</Link></td>
-                    <td>{model.name}</td>
-                    <td>{model.country}</td>
-                    <td>{model.primary_name}</td>
-                    <td>{model.secondary_name}</td>
+                    key={searchResult.delivery_document_id}>
+                    <td><Link>{searchResult.delivery_document_id}</Link></td>
+                    <td>{searchResult.delivery_document_type}</td>
+                    <td>{searchResult.date}</td>
+                    <td><Link to={props.basePath + '/stock?id=' + searchResult.from_warehouse_id}>{searchResult.from_warehouse}</Link></td>
+                    <td><Link to={props.basePath + '/stock?id=' + searchResult.to_warehouse_id}>{searchResult.to_warehouse}</Link></td>
+                    <td>{searchResult.vehicle_no}</td>
+                    <td>{searchResult.driver_name}</td>
                 </tr>;
             })}
         </tbody>
@@ -103,11 +102,13 @@ export default function AllModel(props) {
                             <table className={classes.Hello}>
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Country</th>
-                                        <th>Primary Name</th>
-                                        <th>Secondary Name</th>
+                                        <th>Delivery Document ID</th>
+                                        <th>Delivery Document Type</th>
+                                        <th>Date</th>
+                                        <th>From Warehouse</th>
+                                        <th>To Warehouse</th>
+                                        <th>Vehilce No</th>
+                                        <th>Driver Name</th>
                                     </tr>
                                 </thead>
                                 {tableBody}

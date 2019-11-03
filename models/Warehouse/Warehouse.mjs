@@ -123,13 +123,75 @@ export const getWarehouseStock = (warehouseID, callback) => {
 
 export const getWarehouseName = (warehouseID, callback) => {
     Pool.getConnection((poolErr, connection) => {
-        if(poolErr)
+        if (poolErr)
             return callback(poolErr, null)
         connection.query('SELECT name, address FROM warehouse WHERE id = ?', [warehouseID], (err, rows, fields) => {
             connection.release();
-            if(err)
+            if (err)
                 return callback(err, null);
             return callback(err, rows[0]);
+        })
+    })
+}
+
+const getRegionNameByID = (region, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null)
+        connection.query('SELECT name FROM region WHERE id = ?', [region], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows[0]);
+        })
+    })
+}
+
+const getTerritoryNameByID = (territory, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null)
+        connection.query('SELECT name FROM territory WHERE id = ?', [territory], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows[0]);
+        })
+    })
+}
+
+export const getWarehousesByLocale = (region, territory, callback) => {
+    getRegionNameByID(region, (err, regionData) => {
+        getTerritoryNameByID(territory, (err, territoryData) => {
+            Pool.getConnection((poolErr, connection) => {
+                if (poolErr)
+                    return callback(poolErr, null)
+
+                if (regionData.name == 'Direct') {
+                    connection.query('SELECT W.id, W.name FROM warehouse W', (err, rows, fields) => {
+                        connection.release();
+                        if (err)
+                            return callback(err, null);
+                        return callback(err, rows);
+                    })
+                } else {
+                    if (territoryData.name == 'Direct') {
+                        connection.query('SELECT W.id, W.name FROM warehouse W LEFT JOIN territory T ON W.territory_id = T.id WHERE T.region_id = ?', [region], (err, rows, fields) => {
+                            connection.release();
+                            if (err)
+                                return callback(err, null);
+                            return callback(err, rows);
+                        })
+                    } else {
+                        connection.query('SELECT W.id, W.name FROM warehouse W LEFT JOIN territory T ON W.territory_id = T.id WHERE T.region_id = ? AND W.territory_id = ?', [region, territory], (err, rows, fields) => {
+                            connection.release();
+                            if (err)
+                                return callback(err, null);
+                            return callback(err, rows);
+                        })
+                    }
+                }
+            })
         })
     })
 }

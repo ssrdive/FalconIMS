@@ -214,7 +214,6 @@ export default function GoodsTransfer(props) {
                 })
             })
             .catch(error => {
-                console.log(error);
                 setLoading(prevLoading => false);
                 setSubmitStatus({
                     submitted: true,
