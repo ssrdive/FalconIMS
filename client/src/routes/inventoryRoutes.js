@@ -20,6 +20,7 @@ import GoodsReturn from 'views/Inventory/InventoryTransactions/GoodsReturn';
 import AllDocuments from 'views/Inventory/AllDocuments/AllDocuments';
 import Stock from 'views/Inventory/Stock/Stock';
 import StockDetails from 'views/Inventory/StockDetails/StockDetails';
+import AgewiseReport from 'views/Inventory/AgewiseReport/AgewiseReport';
 
 const basePath = '/app/inventory';
 
@@ -76,6 +77,12 @@ const inventoryRoutes = [
     path: '/user/all',
     title: 'All Users',
     component: AllUser,
+    basePath
+  },
+  {
+    path: '/agewiseReport',
+    title: 'Age Wise Report',
+    component: AgewiseReport,
     basePath
   },
   {

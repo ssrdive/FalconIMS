@@ -56,6 +56,10 @@ export default function InventoryTransactions(props) {
 
     const searchItemHandler = (event) => {
         event.preventDefault();
+        if(searchItemKeyword === '') {
+            alert('Enter search keyword');
+            return;
+        }
         props.history.push({
             pathname: props.basePath + '/itemSearch',
             search: '?skw=' + searchItemKeyword
@@ -68,6 +72,10 @@ export default function InventoryTransactions(props) {
 
     const searchDocumentHandler = (event) => {
         event.preventDefault();
+        if(searchDocumentKeyword === '') {
+            alert('Enter search keyword');
+            return;
+        }
         props.history.push({
             pathname: props.basePath + '/documentSearch',
             search: '?skw=' + searchDocumentKeyword
@@ -107,7 +115,7 @@ export default function InventoryTransactions(props) {
     return (
         <React.Fragment>
             <GridItem xs={12} sm={12} md={12}>
-                <Info><h4 style={{ margin: '0 0 5px 0' }}>Inventory Transactions</h4></Info>
+                <Info><h4 style={{ margin: '5px 0 5px 0' }}><b>Inventory Transactions</b></h4></Info>
             </GridItem>
             <GridItem xs={12} sm={12} md={12}>
                 <Success>Inventory Transactions</Success>

@@ -138,7 +138,7 @@ export default function StocksReports(props) {
     return (
         <React.Fragment>
             <GridItem xs={12} sm={12} md={12}>
-                <Info><h4 style={{ margin: '0 0 5px 0' }}>Stocks Reports</h4></Info>
+                <Info><h4 style={{ margin: '5px 0 5px 0' }}><b>Stocks Reports</b></h4></Info>
             </GridItem>
             <GridItem xs={4} sm={4} md={4}>
                 <Success>Main Stocks</Success>

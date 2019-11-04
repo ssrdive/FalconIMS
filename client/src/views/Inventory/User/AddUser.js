@@ -29,7 +29,8 @@ export default function GoodsIn(props) {
             },
             value: '',
             validation: {
-                required: true
+                required: true,
+                minLength: 6
             },
             valid: false,
             touched: false
@@ -42,7 +43,8 @@ export default function GoodsIn(props) {
             },
             value: '',
             validation: {
-                required: true
+                required: true,
+                minLength: 8
             },
             valid: false,
             touched: false
@@ -68,7 +70,8 @@ export default function GoodsIn(props) {
             },
             value: '',
             validation: {
-                required: true
+                required: true,
+                email: true
             },
             valid: false,
             touched: false
@@ -163,6 +166,10 @@ export default function GoodsIn(props) {
 
         if (rules.required) {
             isValid = value.trim() !== '' && isValid;
+        }
+
+        if (rules.email) {
+            isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value) && isValid;
         }
 
         if (rules.minLength) {

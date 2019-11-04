@@ -14,6 +14,7 @@ import InventoryCount from 'views/Inventory/InventoryCount';
 import InventoryTransactions from 'views/Inventory/InventoryTransactions';
 import InventoryAdministration from 'views/Inventory/InventoryAdministration';
 import UserAdmin from 'views/Inventory/UserAdmin';
+import AgewiseReport from 'views/Inventory/AgewiseReport';
 
 const useStyles = makeStyles(styles);
 
@@ -48,6 +49,9 @@ export default function InventoryRoot(props) {
                             <GridContainer>
                                 {('ViewStocks' in user.accessLevel) ?
                                     <StocksReports {...props} />
+                                    : null}
+                                {('AgewiseReport' in user.accessLevel) ?
+                                    <AgewiseReport {...props} />
                                     : null}
                                 {('InventoryTransactions' in user.accessLevel) ?
                                     <InventoryTransactions {...props} />

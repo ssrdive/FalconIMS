@@ -10,7 +10,7 @@ export default function InventoryAdministration(props) {
     return(
         <React.Fragment>
             <GridItem xs={12} sm={12} md={12}>
-                <Info><h4 style={{ margin: '0 0 5px 0' }}>Inventory Administration</h4></Info>
+                <Info><h4 style={{ margin: '5px 0 5px 0' }}><b>Inventory Administration</b></h4></Info>
             </GridItem>
             <GridItem xs={12} sm={6} md={6}>
                 <Success>Models</Success>

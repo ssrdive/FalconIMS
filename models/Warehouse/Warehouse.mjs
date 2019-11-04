@@ -195,3 +195,16 @@ export const getWarehousesByLocale = (region, territory, callback) => {
         })
     })
 }
+
+export const getStocksByAge = (modelID, days, callback) => {
+    Pool.getConnection((poolErr, connection) => {
+        if (poolErr)
+            return callback(poolErr, null);
+        connection.query('SELECT MS.delivery_document_id, MS.primary_id, MS.secondary_id, DATEDIFF(NOW(), DD.date) as in_stock_for, MS.price, M.name as model, DD.date, DDT.name as delivery_document_type FROM main_stock MS LEFT JOIN model M  ON MS.model_id = M.id LEFT JOIN delivery_document DD ON MS.delivery_document_id = DD.id LEFT JOIN delivery_document_type DDT ON DD.delivery_document_type_id = DDT.id WHERE DATEDIFF(NOW(), DD.date) >= ? AND MS.model_id = ? AND sold = 0;', [days, modelID], (err, rows, fields) => {
+            connection.release();
+            if (err)
+                return callback(err, null);
+            return callback(err, rows);
+        })
+    })
+}

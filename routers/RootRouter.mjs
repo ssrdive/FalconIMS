@@ -25,7 +25,8 @@ import {
     getWarehouseStock,
     getWarehouseName,
     getWarehouseDetails,
-    getWarehousesByLocale
+    getWarehousesByLocale,
+    getStocksByAge
 } from '../models/Warehouse/Warehouse';
 import { getTerritories, createTerritory } from '../models/Territory/Territory';
 import { getRegions, createRegion } from '../models/Region/Region';
@@ -308,6 +309,17 @@ RootRouter.post('/warehouse/stock', (req, res) => {
     getWarehouseStock(warehouseID, (err, data) => {
         if (err)
             return res.json({ status: false, message: 'Failed retrieve warehouse stock data' });
+        else
+            return res.json({ status: true, message: data });
+    })
+})
+
+RootRouter.post('/agewiseReport', (req, res) => {
+    const { modelID, days } = req.body;
+
+    getStocksByAge(modelID, days, (err, data) => {
+        if (err)
+            return res.json({ status: false, message: 'Failed retrieve stocks data' });
         else
             return res.json({ status: true, message: data });
     })

@@ -27,7 +27,8 @@ export default function Login(props) {
             },
             value: '',
             validation: {
-                required: true
+                required: true,
+                minLength: 6
             },
             valid: false,
             touched: false
@@ -36,7 +37,8 @@ export default function Login(props) {
             elementType: 'password',
             elementConfig: {
                 type: 'password',
-                placeholder: 'Password'
+                placeholder: 'Password',
+                minLength: 8
             },
             value: '',
             validation: {
